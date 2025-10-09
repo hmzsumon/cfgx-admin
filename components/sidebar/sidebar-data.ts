@@ -29,7 +29,7 @@ export const NAV_ITEMS: NavItem[] = [
   { key: "dashboard", label: "Dashboard", icon: Grid2x2, href: "/dashboard" },
   {
     key: "accounts",
-    label: "My Accounts",
+    label: "Live Accounts",
     icon: ChartCandlestick,
     href: "/accounts",
   },
@@ -39,6 +39,35 @@ export const NAV_ITEMS: NavItem[] = [
     icon: Bot,
     href: "/ai-accounts",
   },
+
+  {
+    key: "deposits",
+    label: "Deposits",
+    icon: Download,
+
+    children: [
+      { label: "All Deposits", href: "/deposits/all" },
+      {
+        label: "Admin Deposits",
+        href: "/deposits/admin",
+      },
+    ],
+  },
+
+  {
+    key: "withdraw",
+    label: "Withdrawals",
+    icon: Upload,
+
+    children: [
+      { label: "All Withdrawals", href: "/withdrawals/all" },
+      {
+        label: "Pending Withdrawals",
+        href: "/withdrawals/pending",
+      },
+    ],
+  },
+
   {
     key: "positions",
     label: "My Positions",
@@ -53,8 +82,7 @@ export const NAV_ITEMS: NavItem[] = [
       },
     ],
   },
-  { key: "deposit", label: "Deposit", icon: Download, href: "/deposit" },
-  { key: "withdraw", label: "Withdraw", icon: Upload, href: "/withdraw" },
+
   {
     key: "wallet",
     label: "Wallet",

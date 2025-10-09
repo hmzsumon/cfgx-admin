@@ -5,7 +5,7 @@ export const withdrawApi = apiSlice.injectEndpoints({
     // create new withdraw request
     createWithdrawRequest: builder.mutation<any, any>({
       query: (body) => ({
-        url: `/new-withdraw-request`,
+        url: `/new/withdraw`,
         method: "POST",
         body,
       }),
@@ -18,9 +18,52 @@ export const withdrawApi = apiSlice.injectEndpoints({
       providesTags: ["Withdraws"],
     }),
 
-    // get all agents
-    getAllAgents: builder.query<any, any>({
-      query: () => `/get-all-agents`,
+    // get all withdraw requests
+    getAllWithdrawRequests: builder.query<any, any>({
+      query: () => `/get-all-withdraws-for-admin`,
+      providesTags: ["Withdraws"],
+    }),
+
+    // get single withdraw request
+    getSingleWithdrawRequest: builder.query<any, any>({
+      query: (id) => `/get-withdraw-by-id/${id}`,
+      providesTags: ["Withdraws"],
+    }),
+
+    // approve withdraw request
+    approveWithdraw: builder.mutation<any, any>({
+      query: (body) => ({
+        url: `/withdraw/approve`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Withdraws"],
+    }),
+
+    // reject withdraw request
+    rejectWithdraw: builder.mutation<any, any>({
+      query: (body) => ({
+        url: `/admin/withdraw/reject`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Withdraws"],
+    }),
+
+    // get all pending withdraw requests
+    getPendingWithdraws: builder.query<any, any>({
+      query: () => `/admin/pending-withdraws`,
+      providesTags: ["Withdraws"],
+    }),
+
+    // admin approve withdraw request
+    adminApproveWithdraw: builder.mutation<any, any>({
+      query: (body) => ({
+        url: `/admin/withdraw/approve`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Withdraws"],
     }),
   }),
 });
@@ -28,5 +71,10 @@ export const withdrawApi = apiSlice.injectEndpoints({
 export const {
   useCreateWithdrawRequestMutation,
   useGetMyWithdrawRequestsQuery,
-  useGetAllAgentsQuery,
+  useGetAllWithdrawRequestsQuery,
+  useGetSingleWithdrawRequestQuery,
+  useApproveWithdrawMutation,
+  useRejectWithdrawMutation,
+  useGetPendingWithdrawsQuery,
+  useAdminApproveWithdrawMutation,
 } = withdrawApi;
