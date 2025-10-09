@@ -60,6 +60,9 @@ export default function SingleWithdraw({
     _id,
     method,
     createdAt,
+
+    netWorkAddress,
+    netWork,
   } = withdraw ?? {};
 
   /* ────────── mutations ────────── */
@@ -137,29 +140,35 @@ export default function SingleWithdraw({
           {/* ────────── content ────────── */}
           <div className="px-2 py-4">
             <div className="rounded-lg border border-white/10">
-              <Row label="User name:">
-                <span className="font-semibold">{name || "-"}</span>
-              </Row>
-              <Row label="User Id:">
-                <span className="flex items-center gap-2 font-semibold">
-                  {customerId || "-"}
-                  {userId && (
-                    <Link
-                      href={`/users/${userId}`}
-                      className="text-[#21D3B3]"
-                      title="Open profile"
-                    >
-                      <FaArrowUpRightFromSquare />
-                    </Link>
-                  )}
-                </span>
-              </Row>
-              <Row label="Phone:">
-                <span className="font-semibold">{phone || "-"}</span>
-              </Row>
-              <Row label="Amount:">
-                <span className="font-semibold">{fmtUSD(amount)}</span>
-              </Row>
+              <div className="grid border border-white/10 grid-cols-2 gap-2 ">
+                <Row label="User name:">
+                  <span className="font-semibold">{name || "-"}</span>
+                </Row>
+                <Row label="User Id:">
+                  <span className="flex items-center gap-2 font-semibold">
+                    {customerId || "-"}
+                    {userId && (
+                      <Link
+                        href={`/users/${userId}`}
+                        className="text-[#21D3B3]"
+                        title="Open profile"
+                      >
+                        <FaArrowUpRightFromSquare />
+                      </Link>
+                    )}
+                  </span>
+                </Row>
+              </div>
+
+              <div className="grid  grid-cols-2 gap-2 ">
+                <Row label="Phone:">
+                  <span className="font-semibold">{phone || "-"}</span>
+                </Row>
+                <Row label="Amount:">
+                  <span className="font-semibold">{fmtUSD(amount)}</span>
+                </Row>
+              </div>
+
               <Row label="Charge:">
                 <span className="font-semibold">{fmtUSD(charge)}</span>
               </Row>
@@ -172,23 +181,16 @@ export default function SingleWithdraw({
                 </span>
               </Row>
 
-              {method && (
-                <>
-                  <Row label="Network:">
-                    <span className="font-semibold">
-                      {(method as any)?.network}
-                    </span>
-                  </Row>
-                  <Row label="Address:">
-                    <span className="flex items-center gap-2 font-semibold">
-                      {(method as any)?.address}
-                      {(method as any)?.address && (
-                        <CopyToClipboard text={(method as any)?.address} />
-                      )}
-                    </span>
-                  </Row>
-                </>
-              )}
+              <Row label="Network:">
+                <span className="font-semibold">{netWork}</span>
+              </Row>
+              <Row label="Address:">
+                <span className="flex items-center gap-2 font-semibold">
+                  {netWorkAddress}
+
+                  <CopyToClipboard text={netWorkAddress} />
+                </span>
+              </Row>
 
               <Row label="Date Time:">
                 <span className="font-semibold">
