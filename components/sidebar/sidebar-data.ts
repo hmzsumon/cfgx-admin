@@ -48,8 +48,8 @@ export const NAV_ITEMS: NavItem[] = [
     children: [
       { label: "All Deposits", href: "/deposits/all" },
       {
-        label: "Admin Deposits",
-        href: "/deposits/admin",
+        label: "Manual Deposits",
+        href: "/deposits/manual",
       },
     ],
   },

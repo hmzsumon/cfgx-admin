@@ -141,45 +141,59 @@ export default function SingleWithdraw({
           <div className="px-2 py-4">
             <div className="rounded-lg border border-white/10">
               <div className="grid border border-white/10 grid-cols-2 gap-2 ">
-                <Row label="User name:">
-                  <span className="font-semibold">{name || "-"}</span>
-                </Row>
-                <Row label="User Id:">
-                  <span className="flex items-center gap-2 font-semibold">
-                    {customerId || "-"}
-                    {userId && (
-                      <Link
-                        href={`/users/${userId}`}
-                        className="text-[#21D3B3]"
-                        title="Open profile"
-                      >
-                        <FaArrowUpRightFromSquare />
-                      </Link>
-                    )}
-                  </span>
-                </Row>
+                <div className="border-r border-white/10">
+                  <Row label="User name:">
+                    <span className="font-semibold">{name || "-"}</span>
+                  </Row>
+                </div>
+                <div>
+                  <Row label="User Id:">
+                    <span className="flex items-center gap-2 font-semibold">
+                      {customerId || "-"}
+                      {userId && (
+                        <Link
+                          href={`/users/${userId}`}
+                          className="text-[#21D3B3]"
+                          title="Open profile"
+                        >
+                          <FaArrowUpRightFromSquare />
+                        </Link>
+                      )}
+                    </span>
+                  </Row>
+                </div>
               </div>
 
-              <div className="grid  grid-cols-2 gap-2 ">
-                <Row label="Phone:">
-                  <span className="font-semibold">{phone || "-"}</span>
-                </Row>
-                <Row label="Amount:">
-                  <span className="font-semibold">{fmtUSD(amount)}</span>
-                </Row>
+              <div className="grid border border-white/10   grid-cols-2 gap-2 ">
+                <div className="border-r border-white/10">
+                  <Row label="Phone:">
+                    <span className="font-semibold">{phone || "-"}</span>
+                  </Row>
+                </div>
+                <div>
+                  <Row label="Amount:">
+                    <span className="font-semibold">{fmtUSD(amount)}</span>
+                  </Row>
+                </div>
               </div>
 
-              <Row label="Charge:">
-                <span className="font-semibold">{fmtUSD(charge)}</span>
-              </Row>
-              <Row label="Net Amount:">
-                <span className="flex items-center gap-2 font-semibold text-emerald-400">
-                  {fmtUSD(netAmount)}
-                  {netAmount !== undefined && (
-                    <CopyToClipboard text={String(netAmount)} />
-                  )}
-                </span>
-              </Row>
+              <div className="grid border border-white/10   grid-cols-2 gap-2 ">
+                <div className="border-r border-white/10">
+                  <Row label="Net Amount:">
+                    <span className="flex items-center gap-2 font-semibold text-emerald-400">
+                      {fmtUSD(netAmount)}
+                      {netAmount !== undefined && (
+                        <CopyToClipboard text={String(netAmount)} />
+                      )}
+                    </span>
+                  </Row>
+                </div>
+                <div>
+                  <Row label="Charge:">
+                    <span className="font-semibold">{fmtUSD(charge)}</span>
+                  </Row>
+                </div>
+              </div>
 
               <Row label="Network:">
                 <span className="font-semibold">{netWork}</span>
