@@ -35,6 +35,7 @@ export default function AdminUserDetailsPage() {
   const { data, isLoading, isFetching } = useGetUserByIdQuery({ id });
   const user = data?.user;
   const wallet = data?.wallet;
+  console.log({ user, wallet });
 
   /* ────────── derived ────────── */
   const statusChip = useMemo(() => {
@@ -77,10 +78,7 @@ export default function AdminUserDetailsPage() {
     return (
       <main className="min-h-screen bg-[#0B0D12] text-[#E6E6E6]">
         <div className="mx-auto max-w-7xl p-6">
-          <Link
-            href="/admin/users"
-            className="text-sm text-teal-300 hover:underline"
-          >
+          <Link href="/users" className="text-sm text-teal-300 hover:underline">
             ← Back
           </Link>
           <div className="mt-6 rounded-2xl border border-white/10 bg-[#0E1014] p-6">
@@ -139,14 +137,14 @@ export default function AdminUserDetailsPage() {
           </div>
 
           <UserKeyStat
-            label="Wallet Balance"
-            value={fmtCurrency(user.w_balance)}
+            label="Total Deposit"
+            value={fmtCurrency(wallet?.totalDeposit)}
           />
           <UserKeyStat
-            label="Deposit Balance"
-            value={fmtCurrency(user.d_balance)}
+            label="Total Withdraw"
+            value={fmtCurrency(wallet?.totalWithdraw)}
           />
-          <UserKeyStat label="VIP Tier" value={user.vipTier ?? "-"} />
+
           <UserKeyStat
             label="AI Trade Balance"
             value={fmtCurrency(wallet?.totalAiTradeBalance)}
@@ -158,10 +156,6 @@ export default function AdminUserDetailsPage() {
           <UserKeyStat
             label="Total Earning"
             value={fmtCurrency(wallet?.totalEarning)}
-          />
-          <UserKeyStat
-            label="Total Withdraw"
-            value={fmtCurrency(wallet?.totalWithdraw)}
           />
         </section>
 
@@ -179,10 +173,7 @@ export default function AdminUserDetailsPage() {
               <UserPropertyItem label="Customer ID" value={user.customerId} />
               <UserPropertyItem label="Role" value={user.role} />
               <UserPropertyItem label="Rank" value={user.rank} />
-              <UserPropertyItem
-                label="Generation Tier"
-                value={user.generationRewardTier || "-"}
-              />
+
               <UserPropertyItem
                 label="KYC Verified"
                 value={String(user.kyc_verified)}
@@ -206,10 +197,7 @@ export default function AdminUserDetailsPage() {
                 label="Email Verified"
                 value={String(user.email_verified)}
               />
-              <UserPropertyItem
-                label="2FA Enabled"
-                value={String(user.two_factor_enabled)}
-              />
+
               <UserPropertyItem label="Blocked" value={String(user.is_block)} />
               <UserPropertyItem
                 label="Withdraw Block"
@@ -229,15 +217,15 @@ export default function AdminUserDetailsPage() {
               />
               <UserPropertyItem
                 label="Sponsor"
-                value={`${user.sponsorName ?? "-"} (${user.sponsorId ?? "-"})`}
+                value={user.sponsorName ? user.sponsorName : "-"}
               />
               <UserPropertyItem
                 label="Agent"
-                value={`${user.agentName ?? "-"} (${user.agentId ?? "-"})`}
+                value={user.agentName ? user.agentName : "-"}
               />
               <UserPropertyItem
                 label="Parents"
-                value={(user.parents ?? []).join(", ") || "-"}
+                value={(user.parents?.length ? user.parents.length : 0) + ""}
               />
             </div>
           </div>
@@ -268,16 +256,8 @@ export default function AdminUserDetailsPage() {
                   value={fmtCurrency(wallet.totalWithdraw)}
                 />
                 <UserPropertyItem
-                  label="Total Pay"
-                  value={fmtCurrency(wallet.totalPay)}
-                />
-                <UserPropertyItem
-                  label="Total Wine"
-                  value={fmtCurrency(wallet.totalWine)}
-                />
-                <UserPropertyItem
-                  label="Today Wine"
-                  value={fmtCurrency(wallet.todayWine)}
+                  label="Referral Bonus"
+                  value={fmtCurrency(wallet.totalReferralBonus)}
                 />
               </div>
               <div>
@@ -285,22 +265,7 @@ export default function AdminUserDetailsPage() {
                   label="Total Commission"
                   value={fmtCurrency(wallet.totalCommission)}
                 />
-                <UserPropertyItem
-                  label="Level Earning"
-                  value={fmtCurrency(wallet.levelEarning)}
-                />
-                <UserPropertyItem
-                  label="Sponsor Bonus"
-                  value={fmtCurrency(wallet.totalSponsorBonus)}
-                />
-                <UserPropertyItem
-                  label="Generation Earning"
-                  value={fmtCurrency(wallet.generationEarning)}
-                />
-                <UserPropertyItem
-                  label="Referral Bonus"
-                  value={fmtCurrency(wallet.totalReferralBonus)}
-                />
+
                 <UserPropertyItem
                   label="AI Trade Commission"
                   value={fmtCurrency(wallet.totalAiTradeCommission)}

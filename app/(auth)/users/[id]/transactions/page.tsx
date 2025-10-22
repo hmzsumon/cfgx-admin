@@ -71,7 +71,7 @@ export default function AdminUserTransactionsPage() {
             </p>
           </div>
           <Link
-            href={`/admin/users/${id}`}
+            href={`/users/${id}`}
             className="text-sm text-teal-300 hover:underline"
           >
             ← Back to user
