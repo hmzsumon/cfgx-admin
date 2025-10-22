@@ -48,7 +48,7 @@ const teamRows: TeamRow[] = [
 export default function AdminDashboardPage() {
   const { data, isLoading } = useGetAdminDashboardQuery(undefined);
   const { dashboardData: d } = data || {};
-  console.log(d);
+  // console.log(d);
 
   /* ────────── these would come from API in production ────────── */
 
@@ -77,7 +77,7 @@ export default function AdminDashboardPage() {
           />
           <MetricCard
             title="Total Withdrawal"
-            value={formatCurrency(d?.totalWithdrawal || 0)}
+            value={formatCurrency(d?.totalNetWithdraw || 0)}
             accent={<ArrowDownToLine className="h-5 w-5 text-white/50" />}
           />
           <MetricCard
