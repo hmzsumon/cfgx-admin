@@ -4,7 +4,7 @@ import UserKeyStat from "@/components/admin/UserKeyStat";
 import UserPropertyItem from "@/components/admin/UserPropertyItem";
 import { useGetUserByIdQuery } from "@/redux/features/admin/adminUsersApi";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useMemo } from "react";
 
 /* ────────── helpers ────────── */
@@ -27,15 +27,15 @@ const fmtDate = (iso?: string) =>
 
 /* ────────── page ────────── */
 export default function AdminUserDetailsPage() {
-  /* ────────── params ────────── */
+  /* ────────── params/router ────────── */
   const params = useParams<{ id: string }>();
   const id = params.id;
+  const router = useRouter();
 
   /* ────────── data ────────── */
   const { data, isLoading, isFetching } = useGetUserByIdQuery({ id });
   const user = data?.user;
   const wallet = data?.wallet;
-  console.log({ user, wallet });
 
   /* ────────── derived ────────── */
   const statusChip = useMemo(() => {
@@ -78,9 +78,13 @@ export default function AdminUserDetailsPage() {
     return (
       <main className="min-h-screen bg-[#0B0D12] text-[#E6E6E6]">
         <div className="mx-auto max-w-7xl p-6">
-          <Link href="/users" className="text-sm text-teal-300 hover:underline">
-            ← Back
-          </Link>
+          <button
+            onClick={() => router.back()}
+            className="text-sm text-teal-300 hover:underline"
+            type="button"
+          >
+            ← Go Back
+          </button>
           <div className="mt-6 rounded-2xl border border-white/10 bg-[#0E1014] p-6">
             <div className="text-white/70">User not found.</div>
           </div>
@@ -108,12 +112,13 @@ export default function AdminUserDetailsPage() {
             >
               View transactions
             </Link>
-            <Link
-              href="/admin/users"
+            <button
+              onClick={() => router.back()}
               className="text-sm text-teal-300 hover:underline"
+              type="button"
             >
-              ← Back to list
-            </Link>
+              ← Go Back
+            </button>
           </div>
         </div>
 
@@ -144,7 +149,6 @@ export default function AdminUserDetailsPage() {
             label="Total Withdraw"
             value={fmtCurrency(wallet?.totalWithdraw)}
           />
-
           <UserKeyStat
             label="AI Trade Balance"
             value={fmtCurrency(wallet?.totalAiTradeBalance)}
@@ -173,7 +177,6 @@ export default function AdminUserDetailsPage() {
               <UserPropertyItem label="Customer ID" value={user.customerId} />
               <UserPropertyItem label="Role" value={user.role} />
               <UserPropertyItem label="Rank" value={user.rank} />
-
               <UserPropertyItem
                 label="KYC Verified"
                 value={String(user.kyc_verified)}
@@ -197,7 +200,6 @@ export default function AdminUserDetailsPage() {
                 label="Email Verified"
                 value={String(user.email_verified)}
               />
-
               <UserPropertyItem label="Blocked" value={String(user.is_block)} />
               <UserPropertyItem
                 label="Withdraw Block"
@@ -218,6 +220,42 @@ export default function AdminUserDetailsPage() {
               <UserPropertyItem
                 label="Sponsor"
                 value={user.sponsorName ? user.sponsorName : "-"}
+                addon={
+                  user.sponsorId ? (
+                    <Link
+                      href={`/users/${user.sponsorId}`}
+                      className="inline-flex items-center rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-teal-300 hover:bg-white/10"
+                      aria-label="View sponsor profile"
+                      title="View sponsor profile"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        className="mr-1 opacity-80"
+                      >
+                        <path
+                          d="M10.59 13.41a1.996 1.996 0 0 1 0-2.82l3.18-3.18a2 2 0 1 1 2.83 2.83l-1.06 1.06"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M13.41 10.59a1.996 1.996 0 0 1 0 2.82l-3.18 3.18a2 2 0 1 1-2.83-2.83l1.06-1.06"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      Link
+                    </Link>
+                  ) : null
+                }
               />
               <UserPropertyItem
                 label="Agent"
@@ -265,7 +303,6 @@ export default function AdminUserDetailsPage() {
                   label="Total Commission"
                   value={fmtCurrency(wallet.totalCommission)}
                 />
-
                 <UserPropertyItem
                   label="AI Trade Commission"
                   value={fmtCurrency(wallet.totalAiTradeCommission)}

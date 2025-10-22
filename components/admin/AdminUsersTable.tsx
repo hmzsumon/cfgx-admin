@@ -44,7 +44,7 @@ const columns: GridColDef<AdminUserRow>[] = [
   { field: "phone", headerName: "Phone", width: 160 },
   { field: "country", headerName: "Country", width: 140 },
   { field: "role", headerName: "Role", width: 110 },
-  { field: "vipTier", headerName: "VIP", width: 100 },
+
   {
     field: "is_active",
     headerName: "Status",
