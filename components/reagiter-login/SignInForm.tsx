@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-import { useLoginAdminMutation } from "@/redux/features/admin/adminUsersApi";
+import { useLoginAdminMutation } from "@/redux/features/admin/adminApi";
 import Link from "next/link";
 import { Button, Field, Input } from "./UI";
 import { signInSchema, type SignInValues } from "./schemas";
