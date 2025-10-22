@@ -11,6 +11,7 @@ import {
   Settings,
   SquareGanttChart,
   Upload,
+  Users,
   Wallet,
 } from "lucide-react";
 
@@ -27,6 +28,8 @@ export type NavItem = {
 
 export const NAV_ITEMS: NavItem[] = [
   { key: "dashboard", label: "Dashboard", icon: Grid2x2, href: "/dashboard" },
+  { key: "users", label: "All Users", icon: Users, href: "/users" },
+
   {
     key: "accounts",
     label: "Live Accounts",

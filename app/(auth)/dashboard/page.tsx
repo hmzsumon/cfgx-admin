@@ -8,7 +8,8 @@ import MetricCard from "@/components/admin/MetricCard";
 import TeamSummaryList, { TeamRow } from "@/components/admin/TeamSummaryList";
 import TradingVolumeChart from "@/components/admin/TradingVolumeChart";
 import { formatCurrency, formatNumber } from "@/lib/format";
-import { useGetAdminDashboardQuery } from "@/redux/features/admin/adminUsersApi";
+import { useGetAdminDashboardQuery } from "@/redux/features/admin/adminApi";
+
 import { ArrowDownToLine, Banknote, TrendingUp, Users } from "lucide-react";
 
 const tradingData = [
