@@ -22,6 +22,20 @@ export interface IAccount {
   status: "active" | "closed";
   mode: "ai";
   plan: string;
+  planPrice: number;
+  createdAt: string;
+  equity: number;
+  profit: number;
+}
+
+export interface PlaceLossTradeBody {
+  accountNumbers: (number | string)[];
+  symbol: string;
+  side: "buy" | "sell";
+  lots: number;
+  price: number;
+  maxSlippageBps?: number;
+  stopLoss: number;
 }
 
 export const aiAccountApi = apiSlice.injectEndpoints({
@@ -129,6 +143,28 @@ export const aiAccountApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Positions"],
     }),
+
+    /* ────────── get all active ai accounts by plan ────────── */
+    getAllAiAccountsByPlan: builder.query<
+      { success: true; items: IAccount[] },
+      string
+    >({
+      query: (plan) => ({
+        url: `/get-active-ai-accounts-by-plan?plan=${plan}`,
+        method: "GET",
+      }),
+      providesTags: ["Accounts"],
+    }),
+
+    /* ──────────create Ai Loss Position ────────── */
+    createAiLossPosition: builder.mutation<any, PlaceLossTradeBody>({
+      query: (body) => ({
+        url: "/ai-accounts/loss-trade", // নিচে route এ এটা ব্যবহার করব
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Positions", "Accounts"],
+    }),
   }),
 });
 
@@ -145,4 +181,6 @@ export const {
   usePlaceAiOrderMutation,
   useGetAllAiPositionsQuery,
   useCloseAiPositionMutation,
+  useGetAllAiAccountsByPlanQuery,
+  useCreateAiLossPositionMutation,
 } = aiAccountApi;

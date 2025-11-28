@@ -52,10 +52,6 @@ export default function AdminDashboardPage() {
 
   /* ────────── these would come from API in production ────────── */
 
-  const totalUsers = 12450;
-  const totalDeposit = 356245;
-  const totalWithdrawal = 129330;
-  const aiProfit = 14290;
   const aiDelta = "+12.5%";
 
   return (

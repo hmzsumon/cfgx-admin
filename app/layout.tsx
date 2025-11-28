@@ -52,9 +52,9 @@ export default function RootLayout({
       >
         <StoreProvider>
           <SocketProvider>
-            <body style={{ background: "#0B0D12" }}>
+            <div style={{ background: "#0B0D12" }}>
               <Providers>{children}</Providers>
-            </body>
+            </div>
             <Toaster />
           </SocketProvider>
         </StoreProvider>

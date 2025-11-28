@@ -2,16 +2,20 @@
 "use client";
 
 import NumberField from "@/components/trade/fields/NumberField";
-import RowBox from "@/components/trade/parts/RowBox";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { usePlaceAiOrderMutation } from "@/redux/features/ai-account/ai-accountApi";
+import {
+  useCreateAiLossPositionMutation,
+  usePlaceAiOrderMutation,
+} from "@/redux/features/ai-account/ai-accountApi";
+import { useSearchParams } from "next/navigation";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 export type ConfirmTradeDrawerProps = {
   open: boolean;
@@ -40,6 +44,18 @@ export default function ConfirmTradeDrawer({
   headerRight,
   dp = 2,
 }: ConfirmTradeDrawerProps) {
+  const searchParams = useSearchParams();
+
+  // Redux থেকে selected account numbers নিয়ে আসলাম (show করার জন্য)
+  const { selectedAccountNumbers } = useSelector(
+    (state: any) => state.aiAccountUI
+  );
+
+  // plan → "elite"
+  const plan = searchParams.get("plan");
+  // isTradeForLoss → boolean
+  const isTradeForLoss = searchParams.get("isTradeForLoss") === "true";
+
   const sideColor =
     side === "buy"
       ? "bg-blue-600 hover:bg-blue-500"
@@ -87,6 +103,9 @@ export default function ConfirmTradeDrawer({
 
   // mutation here
   const [place, { isLoading }] = usePlaceAiOrderMutation();
+
+  const [createLoss, { isLoading: placingLoss }] =
+    useCreateAiLossPositionMutation();
   const [submitting, setSubmitting] = useState(false);
 
   // volume controls
@@ -143,6 +162,69 @@ export default function ConfirmTradeDrawer({
     }
   }
 
+  async function onConfirm2() {
+    if (!canTrade || submitting) return;
+
+    const stopLossValue = parse(slText) || 0;
+
+    if (isTradeForLoss && !selectedAccountNumbers?.length) {
+      toast.error("Select at least one account for loss trade");
+      return;
+    }
+
+    const toastId = toast.loading("Placing order…");
+    setSubmitting(true);
+
+    try {
+      if (isTradeForLoss) {
+        // 🔥 LOSS TRADE (multiple accounts)
+        const body = {
+          accountNumbers: selectedAccountNumbers,
+          symbol,
+          side,
+          lots,
+          price: execPrice,
+          maxSlippageBps: 50, // ইচ্ছা করলে বাদ দিতে পারো
+          stopLoss: stopLossValue,
+        };
+
+        const res = await createLoss(body).unwrap();
+
+        toast.success("Loss trade placed", { id: toastId });
+        window.dispatchEvent(
+          new CustomEvent("position:opened", {
+            detail: { position: res.position },
+          })
+        );
+      } else {
+        // 🟢 normal ai trade (আগের মতো)
+        const res = await place({
+          accountId: account._id,
+          symbol,
+          side,
+          lots,
+          price: execPrice,
+          takeProfit: parse(tpText) || 0,
+          stopLoss: stopLossValue,
+        }).unwrap();
+
+        toast.success("Order placed", { id: toastId });
+        window.dispatchEvent(
+          new CustomEvent("position:opened", {
+            detail: { position: res.position },
+          })
+        );
+      }
+
+      onOpenChange(false);
+    } catch (err: any) {
+      const msg = err?.data?.message || err?.message || "Failed to place order";
+      toast.error(msg, { id: toastId });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -178,44 +260,51 @@ export default function ConfirmTradeDrawer({
             }
           />
 
-          {/* Take Profit */}
-          <NumberField
-            label="Take Profit"
-            valueText={tpText}
-            onValueText={setTpText}
-            onMinus={decTP}
-            onPlus={incTP}
-            right={
-              <button
-                type="button"
-                className="rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-xs hover:bg-neutral-800"
-                onClick={() => setTpText("")}
-              >
-                Clear
-              </button>
-            }
-          />
-
-          {/* Stop Loss */}
-          <NumberField
-            label="Stop Loss"
-            valueText={slText}
-            onValueText={setSlText}
-            onMinus={decSL}
-            onPlus={incSL}
-            right={
-              <button
-                type="button"
-                className="rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-xs hover:bg-neutral-800"
-                onClick={() => setSlText("")}
-              >
-                Clear
-              </button>
-            }
-          />
+          {isTradeForLoss ? (
+            <>
+              {" "}
+              {/* Stop Loss */}
+              <NumberField
+                label="Stop Loss"
+                valueText={slText}
+                onValueText={setSlText}
+                onMinus={decSL}
+                onPlus={incSL}
+                right={
+                  <button
+                    type="button"
+                    className="rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-xs hover:bg-neutral-800"
+                    onClick={() => setSlText("")}
+                  >
+                    Clear
+                  </button>
+                }
+              />
+            </>
+          ) : (
+            <>
+              {/* Take Profit */}
+              <NumberField
+                label="Take Profit"
+                valueText={tpText}
+                onValueText={setTpText}
+                onMinus={decTP}
+                onPlus={incTP}
+                right={
+                  <button
+                    type="button"
+                    className="rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-xs hover:bg-neutral-800"
+                    onClick={() => setTpText("")}
+                  >
+                    Clear
+                  </button>
+                }
+              />
+            </>
+          )}
 
           {/* Summary */}
-          <div className="space-y-2 text-sm">
+          {/* <div className="space-y-2 text-sm">
             <RowBox>
               <div className="flex items-center justify-between">
                 <span className="text-neutral-300">Symbol</span>
@@ -253,7 +342,7 @@ export default function ConfirmTradeDrawer({
                 <span className="font-medium">${fees.toFixed(2)}</span>
               </div>
             </RowBox>
-          </div>
+          </div> */}
         </div>
 
         {/* Footer */}
@@ -265,19 +354,42 @@ export default function ConfirmTradeDrawer({
           >
             Cancel
           </button>
-          <button
-            disabled={!canTrade || isLoading || submitting}
-            onClick={onConfirm}
-            className={`flex-1 rounded-xl py-3 text-sm font-semibold ${sideColor} disabled:opacity-50 disabled:cursor-not-allowed`}
-          >
-            {submitting || isLoading
-              ? "Placing…"
-              : `Confirm ${side === "buy" ? "Buy" : "Sell"} ${lots.toFixed(
-                  2
-                )} lots ${execPrice > 0 ? execPrice.toFixed(dp) : ""}`}
-          </button>
+          {isTradeForLoss ? (
+            <button
+              disabled={
+                !canTrade ||
+                isLoading ||
+                submitting ||
+                !selectedAccountNumbers?.length
+              }
+              onClick={onConfirm2}
+              className={`flex-1 rounded-xl py-3 text-sm font-semibold bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              {submitting || isLoading
+                ? "Placing…"
+                : `Confirm ${
+                    side === "buy" ? "Buy" : "Sell"
+                  } For Loss Trade ${lots.toFixed(2)} lots ${
+                    execPrice > 0 ? execPrice.toFixed(dp) : ""
+                  } / ${selectedAccountNumbers?.length} Accounts`}
+            </button>
+          ) : (
+            <button
+              disabled={!canTrade || isLoading || submitting}
+              onClick={onConfirm}
+              className={`flex-1 rounded-xl py-3 text-sm font-semibold ${sideColor} disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              {submitting || isLoading
+                ? "Placing…"
+                : `Confirm ${side === "buy" ? "Buy" : "Sell"}  ${lots.toFixed(
+                    2
+                  )} lots ${execPrice > 0 ? execPrice.toFixed(dp) : ""}`}
+            </button>
+          )}
         </div>
       </SheetContent>
     </Sheet>
   );
 }
+
+// isTradeForLoss

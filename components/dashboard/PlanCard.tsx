@@ -12,7 +12,7 @@ import { useGetAllAdminAiAccountsQuery } from "@/redux/features/ai-account/ai-ac
 import { setSelectedAccountId } from "@/redux/features/ai-account/ai-accountUISlice";
 import type { Plan } from "@/types/accounts";
 import { motion } from "framer-motion";
-import { BadgeDollarSign, Wallet2 } from "lucide-react";
+import { BadgeDollarSign, ExternalLink, Wallet2 } from "lucide-react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 
@@ -80,18 +80,38 @@ export function PlanCard({
         </CardContent>
 
         <CardFooter>
-          <Link href={plan.url} className="w-full" prefetch>
-            <Button
-              className="w-full rounded-xl py-6 text-base"
-              disabled={buttonDisabled}
-              onClick={() => {
-                if (!acc) return;
-                dispatch(setSelectedAccountId(acc._id));
-              }}
+          <div className="flex flex-col gap-3 w-full">
+            <Link href={plan.url} className="w-full" prefetch>
+              <Button
+                className="w-full rounded-xl text-sm py-6 "
+                disabled={buttonDisabled}
+                onClick={() => {
+                  if (!acc) return;
+                  dispatch(setSelectedAccountId(acc._id));
+                }}
+              >
+                {buttonDisabled ? (
+                  <span>Loading…</span>
+                ) : (
+                  <div className=" text-center w-full">
+                    <span>Trade Now</span>
+                  </div>
+                )}
+              </Button>
+            </Link>
+            <Link
+              href={`/ai-accounts/${plan?.title.toLowerCase()}`}
+              className="w-full text-center text-sm opacity-80 hover:opacity-100 ml-2"
+              prefetch
             >
-              {buttonDisabled ? "Loading…" : "Trade Now"}
-            </Button>
-          </Link>
+              <span className="flex items-center">
+                <span>View</span>
+                <span>
+                  <ExternalLink size={16} className="ml-2" />
+                </span>
+              </span>
+            </Link>
+          </div>
         </CardFooter>
       </Card>
     </motion.div>
