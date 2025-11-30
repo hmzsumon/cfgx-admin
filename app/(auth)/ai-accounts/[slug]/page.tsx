@@ -16,7 +16,6 @@ const AiAccountPageByPlan = ({ params }: PageProps) => {
     useGetAllAiAccountsByPlanQuery(slug);
 
   const rows: IAccount[] = data?.items ?? [];
-  console.log("Fetched accounts for plan", slug, rows);
 
   return (
     <div className="p-6 space-y-4">

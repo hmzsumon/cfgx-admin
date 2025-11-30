@@ -73,7 +73,7 @@ export const NAV_ITEMS: NavItem[] = [
 
   {
     key: "positions",
-    label: "My Positions",
+    label: "Positions",
     icon: ChartCandlestick,
 
     children: [
@@ -82,6 +82,11 @@ export const NAV_ITEMS: NavItem[] = [
       {
         label: "Closed",
         href: "/closed-positions",
+      },
+
+      {
+        label: "Ai Loss Positions",
+        href: "/ai-loss-positions",
       },
     ],
   },

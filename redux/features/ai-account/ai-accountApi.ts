@@ -28,6 +28,53 @@ export interface IAccount {
   profit: number;
 }
 
+export interface IPositionAccount {
+  _id: string;
+  balance: number;
+  equity: number;
+}
+
+export interface IPositionUser {
+  _id: string;
+  name: string;
+  agentId: string;
+  agentName: string;
+}
+
+export interface IPosition {
+  _id: string;
+  accountId: IPositionAccount;
+  userId: IPositionUser;
+
+  customerId: string;
+  symbol: string;
+  side: "buy" | "sell"; // চাইলে শুধু string রেখেও চালাতে পারো
+
+  lots: number;
+  contractSize: number;
+  entryPrice: number;
+  closePrice: number;
+  manipulateClosePrice: number;
+  margin: number;
+  commissionOpen: number;
+  commissionClose: number;
+
+  status: "open" | "closed" | string; // চাইলে শুধু string
+  openedAt: string; // ISO date string
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+
+  stopLoss: number;
+  plan: string;
+  planPrice: number;
+
+  is_loss: boolean;
+  isStopLoss: boolean;
+  isGlobal: boolean;
+
+  __v: number;
+}
+
 export interface PlaceLossTradeBody {
   accountNumbers: (number | string)[];
   symbol: string;
@@ -165,6 +212,31 @@ export const aiAccountApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Positions", "Accounts"],
     }),
+
+    /* ──────────get-active-ai-positions-by-is-stop-loss ────────── */
+    getActiveAiPositionsByIsStopLoss: builder.query<
+      { success: true; positions: IPosition[] },
+      void
+    >({
+      query: () => ({
+        url: `/get-active-ai-positions-by-is-stop-loss`,
+        method: "GET",
+      }),
+      providesTags: ["Positions"],
+    }),
+
+    /* ──────────delete AiPositions By IsStopLoss ────────── */
+    deleteAiPositionsByIsStopLoss: builder.mutation<
+      { success: boolean; deletedCount: number; updatedAccounts: number },
+      string[]
+    >({
+      query: (positionIds) => ({
+        url: `/delete-ai-positions-by-is-stop-loss`,
+        method: "POST",
+        body: { positionIds },
+      }),
+      invalidatesTags: ["Positions", "Accounts"],
+    }),
   }),
 });
 
@@ -183,4 +255,6 @@ export const {
   useCloseAiPositionMutation,
   useGetAllAiAccountsByPlanQuery,
   useCreateAiLossPositionMutation,
+  useGetActiveAiPositionsByIsStopLossQuery,
+  useDeleteAiPositionsByIsStopLossMutation,
 } = aiAccountApi;
